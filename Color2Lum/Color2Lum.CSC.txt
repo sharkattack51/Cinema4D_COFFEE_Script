@@ -1,0 +1,34 @@
+///////////////////////////////////////////////////
+// -- Color2Lum -- by koichi 20070202
+
+//マテリアル取得
+var mat = doc->GetFirstMaterial();
+if (!mat) return;
+
+while(mat)
+{
+	//チャンネル取得
+	var chan_color = mat->GetChannel(CHANNEL_COLOR);
+	var chan_lum = mat->GetChannel(CHANNEL_LUMINANCE);
+	
+	//コンテナ取得
+	var cnt_color = chan_color->GetContainer();
+	var cnt_lum = chan_lum->GetContainer();
+	
+	//テクスチャ名取得
+	var str_tex = tostring(cnt_color->GetData(CH_TEXTURE));
+	
+	if(str_tex!="nil")
+	{	
+		//コンテナにセット
+		cnt_lum->SetData(CH_TEXTURE,str_tex);
+		chan_lum->SetContainer(cnt_lum);
+		
+		//マテリアルのチャンネルチェック
+		mat->SetChannelState(CHANNEL_LUMINANCE,TRUE);
+		mat->SetChannelState(CHANNEL_COLOR,FALSE);
+	}
+
+	//次のマテリアル
+	mat = mat->GetNext();
+}

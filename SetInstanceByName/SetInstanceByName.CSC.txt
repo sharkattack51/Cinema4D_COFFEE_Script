@@ -1,0 +1,18 @@
+///////////////////////////////////////////////////
+// --SetInstanceByName-- by koichi 20070502
+
+var act = GetActiveObject(doc);
+if(!instanceof(act,InstanceObject))return;
+
+//オブジェクト名格納
+var name = act->GetName();
+act->SetName("_temp_");
+
+//検索
+var tgt = doc->FindObject(name);
+
+//データセット
+var bc = act->GetContainer();
+bc->SetData(1001,tgt);
+act->SetContainer(bc);
+act->SetName(name + " instance");

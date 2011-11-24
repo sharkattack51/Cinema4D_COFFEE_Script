@@ -1,0 +1,11 @@
+/////////////////////////////////////
+// --Zero Setter-- by koichi 20070330
+
+var act = doc->GetActiveObject();
+
+var zero = vector(0);
+
+act->SetPosition(zero);//ˆÊ’u
+act->SetRotation(zero);//‰ñ“]
+
+return;

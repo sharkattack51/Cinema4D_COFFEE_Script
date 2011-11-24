@@ -1,0 +1,69 @@
+/////////////////////////////////////
+// --Sweeper-- by koichi 20070126
+
+var act = GetActiveObject(doc);
+var type = act->GetType();
+if(type!=Ospline)
+{
+	if((type<Osplineprofile)||(type>Osplinecontour))
+		return;
+}
+
+/*
+//type
+Ospline
+Osplineprofile
+Osplineflower
+Osplineformula
+Osplinetext
+Osplinenside
+Ospline4side
+Osplinecircle
+Osplinearc
+Osplinecissoid
+Osplinecycloid
+Osplinehelix
+Osplinerectangle
+Osplinestar
+Osplinecogwheel
+Osplinecontour
+*/
+
+var actName = act->GetName();
+var mg = act->GetMg();
+
+//create new Sweep NURBS
+CallCommand(5118);//Sweep NURBS
+var swp = GetActiveObject(doc);
+swp->SetName("Sweep NURBS (" + actName + ")");
+swp->SetMg(mg);
+
+//親子設定
+swp->Remove();
+swp->InsertBefore(act);
+swp->SetMg(mg);
+act->Remove();
+act->InsertUnder(swp);
+act->SetMg(mg);
+
+//断面スプラインの設置
+CallCommand(5181);//Circle
+var cir = GetActiveObject(doc);
+cir->SetName("Section Spline");
+cir->Remove();
+cir->InsertBefore(act);
+
+var p0;
+var p0t;
+if(type==Ospline)
+{
+	p0 = act->GetPoint(0);
+	p0t = VectorToHPB(act->GetSplineTangent(0,0));
+}
+else
+{
+	p0 = vector(0,0,0);
+	p0t = vector(0,0,0);
+}
+cir->SetPosition(p0);
+cir->SetRotation(p0t);

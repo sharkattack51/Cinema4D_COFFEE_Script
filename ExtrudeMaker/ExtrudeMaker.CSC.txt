@@ -1,0 +1,59 @@
+//////////////////////////////////////
+// --ExtrudeMaker-- by koichi 20070212
+
+var thick = 1.0;//zŒú‚ÝÝ’è
+var start_cap = 1;//0:None 1:Cap 2:Fillet 3:FilletCap
+var end_cap = 1;
+
+var act = GetActiveObject(doc);
+var type = act->GetType();
+if(type!=Ospline)
+{
+println(type);
+	if((type<Osplineprofile)||(type>Osplinecontour))
+		return;
+}
+
+/*
+//type
+Ospline
+Osplineprofile
+Osplineflower
+Osplineformula
+Osplinetext
+Osplinenside
+Ospline4side
+Osplinecircle
+Osplinearc
+Osplinecissoid
+Osplinecycloid
+Osplinehelix
+Osplinerectangle
+Osplinestar
+Osplinecogwheel
+Osplinecontour
+*/
+
+var actName = act->GetName();
+var mg = act->GetMg();
+
+CallCommand(5116);//ExtrudeNURBS
+var ext = GetActiveObject(doc);
+ext->SetName("Extrude NURBS (" + actName + ")");
+ext->SetMg(mg);
+
+//ŠK‘w•ˆÊ’u
+ext->Remove();
+ext->InsertBefore(act);
+ext->SetMg(mg);
+act->Remove();
+act->InsertUnder(ext);
+act->SetMg(mg);
+
+//ExtrudeNURBS option
+ext#EXTRUDEOBJECT_MOVE = vector(0,0,thick);
+ext#CAP_START = start_cap;
+ext#CAP_END = end_cap;
+
+return;
+
